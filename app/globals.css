@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@media (prefers-color-scheme: dark) {}
+
+body {
+  color-scheme: dark;
+  background-color: #1a1a1a;
+  color: #f3f6f9;
+}
+
+/* secondary: #242424
+   terciario: #8570f3
+*/
