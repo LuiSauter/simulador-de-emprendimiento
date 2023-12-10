@@ -165,7 +165,7 @@ const projectsData = [
 
 const Projects = () => {
   const [projects, setProjects] = useState(projectsData)
-  const { CreateProjectModal, setShowCreateModal } = useModal()
+  const { CreateProjectModal, setShowCreateModal } = useModal({ update: false, project: null })
   return (
     <div className='flex flex-col justify-center min-h-[calc(100vh-56px)] p-4 md:px-6'>
       <CreateProjectModal />

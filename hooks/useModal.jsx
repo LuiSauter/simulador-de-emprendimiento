@@ -1,7 +1,7 @@
 import CreateProject from '@/components/form-add-update-project'
 import { useCallback, useMemo, useState } from 'react'
 
-export function useModal ({ update, project }) {
+export function useModal ({ update = false, project = null }) {
   const [showCreateModal, setShowCreateModal] = useState(false)
 
   const modalCallback = useCallback(() => {

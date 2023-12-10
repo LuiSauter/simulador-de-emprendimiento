@@ -95,12 +95,12 @@ const project = {
 
 const ProjectIdPage = ({ params }) => {
   const [cards, setCards] = useState(allCards)
-  const { nuevosResultados, resultadosActuales } = calcularSimulacion(project)
+  const { nuevosResultados, currentResults } = calcularSimulacion(project)
   const searchParams = useSearchParams()
   const { CreateProjectModal, setShowCreateModal } = useModal({ update: true, project })
 
   console.log({ params, query: searchParams.get('simulation') })
-  console.log({ resultadosActuales, nuevosResultados })
+  console.log({ currentResults, nuevosResultados })
   const data = {
     labels: ['Ingresos', 'Ganancias', 'Pérdidas'],
     datasets: [
@@ -114,7 +114,7 @@ const ProjectIdPage = ({ params }) => {
       },
       {
         label: 'Resultados Nuevos',
-        data: [resultadosActuales.actualIncome, resultadosActuales.currentProfits, resultadosActuales.currentLosses],
+        data: [currentResults.actualIncome, currentResults.currentProfits, currentResults.currentLosses],
         backgroundColor: 'rgba(255,99,132,0.2)',
         borderColor: 'rgba(255,99,132,1)',
         borderWidth: 1,
@@ -136,12 +136,12 @@ const ProjectIdPage = ({ params }) => {
     datasets: [
       {
         label: 'Ganancias',
-        data: [resultadosActuales.currentProfits, nuevosResultados.newProfits],
+        data: [currentResults.currentProfits, nuevosResultados.newProfits],
         backgroundColor: 'rgba(33,196, 106, 0.5)'
       },
       {
         label: 'Pérdidas',
-        data: [resultadosActuales.currentLosses, nuevosResultados.newLosses],
+        data: [currentResults.currentLosses, nuevosResultados.newLosses],
         backgroundColor: 'rgba(241, 55, 122, 0.5)'
       }
     ]
@@ -167,9 +167,9 @@ const ProjectIdPage = ({ params }) => {
       {
         label: 'Bolivianos',
         data: [
-          resultadosActuales.actualIncome,
+          currentResults.actualIncome,
           nuevosResultados.newIncome,
-          resultadosActuales.currentProfits,
+          currentResults.currentProfits,
           nuevosResultados.newProfits
         ],
         backgroundColor: [

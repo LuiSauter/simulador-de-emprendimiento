@@ -1,6 +1,17 @@
 import { Schema, model, models } from 'mongoose'
 
 const simulationSchema = new Schema({
+  currentResults: {
+    actualIncome: {
+      type: Number,
+      
+    },
+    currentProfits,
+    currentLosses,
+    offerDemand: project.offerDemand,
+    production: project.production,
+    costs: project.costs
+  },
   newRevenue: { // nuevos_ingresos
     shortTerm: Number, // corto y largo plazo
     longTerm: Number

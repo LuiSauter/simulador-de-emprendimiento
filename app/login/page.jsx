@@ -23,7 +23,7 @@ const LoginPage = () => {
 
   return (
     <div className='min-h-full md:min-h-screen flex md:flex-row justify-center items-center bg-tertiary'>
-      <div className='flex min-h-screen w-full flex-col justify-center px-6 py-12 lg:px-8 md:rounded-r-3xl transition'>
+      <div className='flex min-h-screen w-full flex-col justify-center px-6 py-12 lg:px-8 md:rounded-r-3xl transition bg-primary'>
         <div className='sm:mx-auto sm:w-full sm:max-w-sm'>
           <figure className='mx-auto h-52 w-52 flex items-center justify-center rounded-full overflow-hidden shadow-xl shadow-tertiary/30'>
             <Image
