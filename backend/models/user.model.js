@@ -15,13 +15,10 @@ const userSchema = new Schema(
         'El correo electronico es invalido'
       ]
     },
-    password: {
-      type: String, required: [true, 'La contraseña es requerida']
-    },
-    photo: { type: String, required: true },
+    image: { type: String, required: true },
     projects: [{
       type: Schema.Types.ObjectId,
-      ref: 'Entrepreneurship'
+      ref: 'Project'
     }]
   }, { timestamps: true })
 

@@ -1,5 +1,5 @@
+/* eslint-disable space-before-function-paren */
 import { Inter } from 'next/font/google'
-// import Providers from './providers'
 import './globals.css'
 import { Providers } from './Providers'
 

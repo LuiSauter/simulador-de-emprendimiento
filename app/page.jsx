@@ -1,4 +1,6 @@
 'use client'
+/* eslint-disable space-before-function-paren */
+
 import { useSession } from 'next-auth/react'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'

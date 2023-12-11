@@ -6,15 +6,17 @@ if (!MONGODB_URI) {
   throw new Error('MONGODB_URI must be defined')
 }
 
-export const connectDB = async () => {
-  try {
-    const { connection } = await mongoose.connect(MONGODB_URI)
-    if (connection.readyState === 1) {
-      console.log('MongoDB Connected')
-      return Promise.resolve(true)
-    }
-  } catch (error) {
-    console.error(error)
-    return Promise.reject(error)
-  }
+const conn = {
+  isConnected: false
 }
+
+export async function connectDB() {
+  if (conn.isConnected) {
+    return
+  }
+  const db = await mongoose.connect(MONGODB_URI)
+  conn.isConnected = db.connections[0].readyState
+}
+
+mongoose.connection.on('connected', () => console.log('Mongodb connected to db'))
+mongoose.connection.on('error', (error) => console.error('Mongodb Error:', error.message))

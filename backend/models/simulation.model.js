@@ -2,46 +2,39 @@ import { Schema, model, models } from 'mongoose'
 
 const simulationSchema = new Schema({
   currentResults: {
-    actualIncome: {
-      type: Number,
-      
+    actualIncome: Number,
+    currentProfits: Number,
+    currentLosses: Number,
+    offerDemand: Number,
+    production: {
+      unitsProduced: Number,
+      productionCapacity: Number
     },
-    currentProfits,
-    currentLosses,
-    offerDemand: project.offerDemand,
-    production: project.production,
-    costs: project.costs
+    costs: {
+      fixed: Number,
+      variables: Number
+    }
   },
-  newRevenue: { // nuevos_ingresos
-    shortTerm: Number, // corto y largo plazo
-    longTerm: Number
+  newResults: {
+    newIncome: Number,
+    newProfits: Number,
+    newLosses: Number,
+    newPrice: Number,
+    demandImpact: Number,
+    offerImpact: Number,
+    marketEquilibrium: {
+      equilibriumPrice: Number,
+      equilibriumQuantity: Number
+    },
+    elasticity: Number,
+    production: {
+      shortTerm: Number,
+      longTerm: Number
+    }
   },
-  newProfits: { // nuevas_ganancias
-    shortTerm: Number, // corto y largo plazo
-    longTerm: Number
-  },
-  newLosses: { // nuevas_perdidas
-    shortTerm: Number, // corto y largo plazo
-    longTerm: Number
-  },
-  demandImpact: Number, // impacto_demanda
-  offerImpact: Number, // impacto_oferta
-  marketEquilibrium: {
-    equilibriumPrice: Number,
-    equilibriumQuantity: Number
-  },
-  elasticity: Number,
-  production: {
-    shortTerm: Number,
-    longTerm: Number
-  },
-  scalePerformance: {
-    constantPerformance: Number,
-    decreasingPerformance: Number
-  },
-  entrepreneurship: {
+  project: {
     type: Schema.Types.ObjectId,
-    ref: 'Entrepreneurship'
+    ref: 'Project'
   }
 
 }, { timestamps: true })

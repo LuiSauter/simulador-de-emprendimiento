@@ -1,37 +1,11 @@
+/* eslint-disable space-before-function-paren */
 'use client'
 import { useRouter } from 'next/navigation'
 import Modal from './ui/modal'
 import { useState } from 'react'
+import { useSession } from 'next-auth/react'
 
-const data = `"simulacion_resultados": {
-  "nuevos_ingresos": {
-    "corto_plazo": 110000,
-      "largo_plazo": 120000
-  },
-  "nuevas_ganancias": {
-    "corto_plazo": 55000,
-      "largo_plazo": 70000
-  },
-  "nuevas_perdidas": {
-    "corto_plazo": 25000,
-      "largo_plazo": 20000
-  },
-  "impacto_demanda": 200,
-    "impacto_oferta": -200,
-      "equilibrio_mercado": {
-    "precio_equilibrio": 210,
-      "cantidad_equilibrio": 850
-  },
-  "elasticidad": 0.3,
-    "produccion_corto_plazo": 700,
-      "produccion_largo_plazo": 800,
-        "rendimientos_escala": {
-    "rendimientos_constantes": false,
-      "rendimientos_decrecientes": true
-  }
-}`
-
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   name: '',
   description: '',
   industry: '',
@@ -58,18 +32,37 @@ const INITIAL_STATE = {
 }
 
 const FormAddUpdateProject = ({ showCreateModal, setShowCreateModal, project, update = false }) => {
-  const [simulationId, setSimulationId] = useState('simu123')
-  const [projectId, setProjectId] = useState('project123')
-  const [formData, setFormData] = useState(update ? project : INITIAL_STATE)
+  const [formData, setFormData] = useState(update ? project || INITIAL_STATE : INITIAL_STATE)
+  const { data } = useSession()
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const handleSubmit = (e) => {
+
+  const createProject = async (obj) => {
+    try {
+      setLoading(true)
+      const response = await fetch('/api/projects', {
+        method: 'POST',
+        header: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(obj)
+      })
+      return await response.json()
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log(formData)
-    router.push(`/projects/${projectId}/?simulation=${simulationId}`)
+    const response = data?.user && await createProject({ ...formData, email: data?.user.email })
+    console.log(response)
+    router.push(`/projects/${response.projectId}/?simulation=${response.simulationId}`)
   }
 
   const handleInputChange = (e) => {
-    console.log(e)
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
@@ -106,7 +99,7 @@ const FormAddUpdateProject = ({ showCreateModal, setShowCreateModal, project, up
 
             <label className='flex flex-col gap-2'>
               <span className='label-text'>Industria</span>
-              <select onChange={handleInputChange} name='industry' value={formData.industry} defaultValue={formData.industry} className='select select-primary select-ghost w-full max-w-xs'>
+              <select onChange={handleInputChange} name='industry' value={formData.industry} className='select select-primary select-ghost w-full max-w-xs'>
                 <option value='Tecnología'>Tecnología</option>
                 <option value='Salud'>Salud</option>
                 <option value='Finanzas'>Finanzas</option>
@@ -251,8 +244,8 @@ const FormAddUpdateProject = ({ showCreateModal, setShowCreateModal, project, up
           </div>
         </div>
         <button className='bg-tertiary hover:bg-tertiary/80 w-full rounded-md text-center px-4 py-3 flex flex-row items-center justify-center gap-3'>
-          {/* <span className='loading loading-spinner' /> */}
-          {!update ? 'Crear proyecto y Iniciar la simulación' : 'Actualizar'}
+          {loading && <span className='loading loading-spinner' />}
+          {!update ? 'Crear proyecto e Iniciar la simulación' : 'Actualizar'}
         </button>
       </form>
     </Modal>

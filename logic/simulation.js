@@ -1,47 +1,46 @@
 function calcularSimulacion(project) {
+  // Calcular los resultados actuales
   const actualIncome = project.prices.actualPrice * project.offerDemand.currentDemand
-  const newIncome = project.prices.newPrice * project.offerDemand.newDemand
-  // Resultados Actuales
-  const currentProfits = actualIncome - (project.costs.fixed + project.costs.variables)
-  const currentLosses = (project.costs.fixed + project.costs.variables) - actualIncome
-  const newProfits = newIncome - (project.costs.fixed + project.costs.variables)
-  const newLosses = (project.costs.fixed + project.costs.variables) - newIncome
-  // Impacto en la Demanda y Oferta
+  const totalCosts = project.costs.fixed + project.costs.variables
+
+  // Calcular los resultados nuevos
   const demandImpact = project.offerDemand.newDemand - project.offerDemand.currentDemand
-  const offerImpact = (project.offerDemand.currentDemand + project.offerDemand.newDemand) / 2
-  // Equilibrio de Mercado
-  const equilibriumPrice = (project.prices.actualPrice + project.prices.newPrice) / 2
-  const equilibriumQuantity = project.offerDemand.currentOffer
-  // Elasticidad
-  const elasticity = demandImpact / ((project.offerDemand.currentDemand + project.offerDemand.newDemand) / 2)
-  // Producción a Corto Plazo y Largo Plazo
-  const shortTerm = project.production.unitsProduced
-  const longTerm = project.production.productionCapacity
+  const offerImpact = project.offerDemand.newOffer - project.offerDemand.currentOffer
+  const newIncome = project.prices.newPrice * project.offerDemand.newDemand
+  const percentChangeInDemand = (project.offerDemand.newDemand - project.offerDemand.currentDemand) / project.offerDemand.currentDemand
+  const shortTermProduction = project.production.unitsProduced + offerImpact
+  const longTermProduction = project.production.productionCapacity + offerImpact
 
   return {
     currentResults: {
       actualIncome,
-      currentProfits,
-      currentLosses,
-      offerDemand: project.offerDemand,
-      production: project.production,
-      costs: project.costs
+      currentProfits: Math.max(0, actualIncome - totalCosts),
+      currentLosses: Math.max(0, totalCosts - actualIncome),
+      offerDemand: project.offerDemand.currentDemand,
+      production: {
+        unitsProduced: Math.min(project.production.unitsProduced, project.production.productionCapacity),
+        productionCapacity: project.production.productionCapacity
+      },
+      costs: {
+        fixed: project.costs.fixed,
+        variables: project.costs.variables * project.production.unitsProduced
+      }
     },
-    nuevosResultados: {
+    newResults: {
       newIncome,
-      newProfits,
-      newLosses,
+      newProfits: Math.max(0, newIncome - totalCosts),
+      newLosses: Math.max(0, totalCosts - newIncome),
       newPrice: project.prices.newPrice,
       demandImpact,
       offerImpact,
       marketEquilibrium: {
-        equilibriumPrice,
-        equilibriumQuantity
+        equilibriumPrice: (project.prices.actualPrice + project.prices.newPrice) / 2,
+        equilibriumQuantity: (project.offerDemand.currentDemand + project.offerDemand.newDemand) / 2
       },
-      elasticity,
+      elasticity: percentChangeInDemand,
       production: {
-        shortTerm,
-        longTerm
+        shortTerm: shortTermProduction,
+        longTerm: longTermProduction
       }
     }
   }

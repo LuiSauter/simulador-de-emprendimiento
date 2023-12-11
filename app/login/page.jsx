@@ -5,12 +5,34 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 const LoginPage = () => {
-  const { status } = useSession()
+  const { status, data } = useSession()
+  const [loading, setLoading] = useState(false)
   const [enable, setEnable] = useState(false)
   const router = useRouter()
+
+  const SignInUser = async (user) => {
+    try {
+      const response = await fetch('/api/user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(user)
+      })
+      const data = await response.json()
+      if (data && (data.message === 'sign in' || data.message === 'sign up')) {
+        router.push('/projects')
+        router.refresh()
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
     if (status === 'authenticated') {
-      // router.replace('/projects')
+      setLoading(true)
+      SignInUser(data?.user).finally(() => setLoading(false))
     }
   }, [status])
 
@@ -37,17 +59,24 @@ const LoginPage = () => {
         </div>
 
         <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
-          Bienvenido de nuevo, Por favor ingrese a su cuenta.
-          <div className='mt-4'>
-            <button disabled={!enable} onClick={() => enable && signIn('google', { callbackUrl: '/projects' })} className='flex w-full justify-center rounded-xl bg-tertiary px-4 py-3 text-lg font-semibold leading-6 text-white shadow-sm hover:bg-tertiary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-tertiary'>{enable ? 'Iniciar sesión con Google' : 'Espere un momento...'}</button>
+          <div>
+            <button
+              disabled={!enable} onClick={() => {
+                enable && signIn('google')
+              }} className='flex w-full justify-center rounded-xl bg-tertiary px-4 py-3 text-lg font-semibold leading-6 text-white shadow-sm hover:bg-tertiary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-tertiary'
+            >{enable ? loading ? <span className='loading loading-spinner' /> : 'Iniciar sesión con Google' : 'Espere un momento...'}
+            </button>
           </div>
         </div>
+        <footer className='text-center text-sm text-textSecondary pt-4'>
+          <p>Feria Semilleros 2-2023</p>
+        </footer>
       </div>
-      <div className='bg-tertiary md:h-screen w-full hidden md:flex flex-col justify-center items-center'>
+      <div className='bg-tertiary md:h-screen w-full hidden md:flex flex-col justify-center items-center p-6 lg:p-20'>
         <Image
           priority
-          className='bg-transparent' src='/login.svg' alt='Simulador de emprendimiento'
-          width={400} height={400}
+          className='bg-transparent h-auto w-auto' src='/login.svg' alt='Simulador de emprendimiento'
+          width={400} height={279.94}
         />
       </div>
     </div>
