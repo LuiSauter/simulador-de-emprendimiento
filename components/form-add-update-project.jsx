@@ -55,11 +55,34 @@ const FormAddUpdateProject = ({ showCreateModal, setShowCreateModal, project, up
     }
   }
 
+  const addSimulation = async (obj) => {
+    try {
+      setLoading(true)
+      const response = await fetch(`/api/projects/${project._id}`, {
+        method: 'PUT',
+        header: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(obj)
+      })
+      return await response.json()
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const response = data?.user && await createProject({ ...formData, email: data?.user.email })
-    console.log(response)
-    router.push(`/projects/${response.projectId}/?simulation=${response.simulationId}`)
+    if (update) {
+      const responseUpdated = data?.user && await addSimulation(formData)
+      router.push(`/projects/${responseUpdated.projectId}/?simulation=${responseUpdated.simulationId}`)
+      router.refresh()
+    } else {
+      const response = data?.user && await createProject({ ...formData, email: data?.user.email })
+      router.push(`/projects/${response.projectId}/?simulation=${response.simulationId}`)
+    }
   }
 
   const handleInputChange = (e) => {

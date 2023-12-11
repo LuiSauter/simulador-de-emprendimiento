@@ -1,17 +1,17 @@
 import { Schema, model, models } from 'mongoose'
 
 const projectSchema = new Schema({
-  name: { type: String, required: true },
+  name: { type: String },
   description: { type: String },
-  industry: { type: String, required: true },
+  industry: { type: String },
   estimatedIncome: Number,
   costs: {
-    fixed: { type: Number, required: true },
-    variables: { type: Number, required: true }
+    fixed: { type: Number },
+    variables: { type: Number }
   },
   production: {
-    unitsProduced: { type: Number, required: true },
-    productionCapacity: { type: Number, required: true }
+    unitsProduced: { type: Number },
+    productionCapacity: { type: Number }
   },
   prices: {
     actualPrice: { type: Number },
